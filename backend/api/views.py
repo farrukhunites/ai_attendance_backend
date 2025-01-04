@@ -2,9 +2,10 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework import generics, status
 from rest_framework.response import Response
-from .models import AdminLogin, ParentLogin, Student, Courses
+from .models import Attendance, AdminLogin, ParentLogin, Student, Courses
 from .serializers import AdminLoginSerializer, ParentLoginSerializer, AdminLoginRequestSerializer,ParentLoginRequestSerializer, StudentSerializer
 from .serializers import CourseSerializer
+from .serializers import AttendanceSerializer
 # Create your views here.
 
 class AdminLoginListCreate(generics.ListCreateAPIView):
@@ -90,3 +91,50 @@ class ParentLoginView(APIView):
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# Attendance Views
+class MarkAttendanceView(APIView):
+    def post(self, request):
+        """
+        Marks attendance for a given student and course.
+        """
+        data = request.data
+        student_id = data.get('student_id')
+        course_id = data.get('course_id')
+        date = data.get('date')
+        status_value = data.get('status')
+
+        if not all([student_id, course_id, date, status_value]):
+            return Response({"error": "All fields (student_id, course_id, date, status) are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            student = Student.objects.get(id=student_id)
+            course = Courses.objects.get(id=course_id)
+        except (Student.DoesNotExist, Courses.DoesNotExist):
+            return Response({"error": "Invalid student_id or course_id."}, status=status.HTTP_404_NOT_FOUND)
+
+        attendance, created = Attendance.objects.get_or_create(
+            student=student,
+            course=course,
+            date=date,
+            defaults={'status': status_value}
+        )
+
+        if not created:
+            return Response({"error": "Attendance for this student, course, and date already exists."}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = AttendanceSerializer(attendance)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def get(self, request, course_id, student_id):
+        """
+        Retrieves attendance records for a specific student and course.
+        """
+        try:
+            course = Courses.objects.get(id=course_id)
+            student = Student.objects.get(id=student_id)
+        except (Courses.DoesNotExist, Student.DoesNotExist):
+            return Response({"error": "Invalid course_id or student_id."}, status=status.HTTP_404_NOT_FOUND)
+
+        attendance_records = Attendance.objects.filter(course=course, student=student)
+        serializer = AttendanceSerializer(attendance_records, many=True)
+        return Response(serializer.data)

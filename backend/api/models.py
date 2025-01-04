@@ -45,3 +45,20 @@ class Student(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.roll_number})"
+    
+
+class Attendance(models.Model):
+    student = models.ForeignKey('Student', on_delete=models.CASCADE, related_name='attendances')
+    course = models.ForeignKey('Courses', on_delete=models.CASCADE, related_name='attendances')
+    date = models.DateField()
+    status_choices = [
+        ('present', 'Present'),
+        ('absent', 'Absent'),
+        ('late', 'Late'),
+        ('early_left', 'Early Left'),
+    ]
+    status = models.CharField(max_length=20, choices=status_choices)
+
+    def __str__(self):
+        return f"{self.student.first_name} - {self.course.name} on {self.date} - {self.status}"
+

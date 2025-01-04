@@ -10,4 +10,9 @@ urlpatterns = [
     path('parentlogin/login/', views.ParentLoginView.as_view(), name='parent-login'),
     path('courses/', views.CourseListCreateView.as_view(), name='course-list-create'),
     path('students/', views.StudentListCreateView.as_view(), name='student-list-create'),
+    # Mark attendance for a specific student and course
+    path('attendance/mark/', views.MarkAttendanceView.as_view(), name='mark-attendance'),
+    
+    # Retrieve attendance for a specific student and course
+    path('attendance/<int:course_id>/<int:student_id>/', views.MarkAttendanceView.as_view(), name='get-student-course-attendance'),
 ] 

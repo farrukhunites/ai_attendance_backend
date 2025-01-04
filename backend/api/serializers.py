@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import AdminLogin, ParentLogin, Student, Courses
+from .models import Attendance
 
 class AdminLoginSerializer(serializers.ModelSerializer):
     class Meta:
@@ -35,3 +36,9 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ['id', 'roll_number', 'first_name', 'last_name', 'date_of_birth', 'email', 'parentId', 'courses']
+
+
+class AttendanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attendance
+        fields = ['id', 'student', 'course', 'date', 'status']
