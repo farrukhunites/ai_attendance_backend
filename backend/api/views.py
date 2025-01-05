@@ -21,12 +21,43 @@ class CourseListCreateView(generics.ListCreateAPIView):
     queryset = Courses.objects.all()
     serializer_class = CourseSerializer
 
+class CoursesByStudentView(APIView):
+    def get(self, request, student_id):
+        """
+        Fetch courses for a specific student by student_id.
+        """
+        try:
+            # Retrieve the student by ID
+            student = Student.objects.get(id=student_id)
+        except Student.DoesNotExist:
+            return Response({"error": "Student not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Get the courses associated with the student
+        courses = student.courses.all()
+        serializer = CourseSerializer(courses, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 # Student Views
 class StudentListCreateView(generics.ListCreateAPIView):
     queryset = Student.objects.all()
 
     def get_serializer_class(self):
         return StudentSerializer
+    
+class StudentDetailView(APIView):
+    def get(self, request, student_id):
+        """
+        Retrieve a single student by their ID.
+        """
+        try:
+            student = Student.objects.get(id=student_id)
+        except Student.DoesNotExist:
+            return Response({"error": "Student not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = StudentSerializer(student)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class AdminLoginDetail(generics.RetrieveAPIView):
     queryset = AdminLogin.objects.all()
@@ -138,3 +169,16 @@ class MarkAttendanceView(APIView):
         attendance_records = Attendance.objects.filter(course=course, student=student)
         serializer = AttendanceSerializer(attendance_records, many=True)
         return Response(serializer.data)
+
+class DeleteAttendanceView(APIView):
+    def delete(self, request, attendance_id):
+        """
+        Deletes an attendance record by its ID.
+        """
+        try:
+            attendance = Attendance.objects.get(id=attendance_id)
+        except Attendance.DoesNotExist:
+            return Response({"error": "Attendance record not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        attendance.delete()
+        return Response({"message": "Attendance record deleted successfully."}, status=status.HTTP_204_NO_CONTENT)

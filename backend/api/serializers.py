@@ -27,7 +27,7 @@ class ParentLoginRequestSerializer(serializers.Serializer):
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Courses
-        fields = ['id', 'name', 'code', 'credits', 'description']
+        fields = ['id', 'name', 'code', 'credits', 'semester', 'description']
 
 
 class StudentSerializer(serializers.ModelSerializer):

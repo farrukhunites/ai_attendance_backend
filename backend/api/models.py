@@ -24,6 +24,7 @@ class Courses(models.Model):
     name = models.CharField(max_length=100)
     code = models.CharField(max_length=20, unique=True)  # Course code (e.g., CS101)
     credits = models.IntegerField(default=2)
+    semester = models.IntegerField(default=2)
     description = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -61,4 +62,3 @@ class Attendance(models.Model):
 
     def __str__(self):
         return f"{self.student.first_name} - {self.course.name} on {self.date} - {self.status}"
-

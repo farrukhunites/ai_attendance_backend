@@ -1,12 +1,14 @@
 from django.contrib import admin
 from .models import AdminLogin
 from .models import ParentLogin
-from .models import Student, Courses
+from .models import Student, Courses, Attendance
 
 # Register your models here.
 
 admin.site.register(AdminLogin)
 admin.site.register(ParentLogin)
+admin.site.register(Attendance)
+
 
 
 @admin.register(Student)
