@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .images import receive_images
  
 urlpatterns = [
     path("adminlogin/", views.AdminLoginListCreate.as_view(), name = "admin_view"),
@@ -22,4 +23,5 @@ urlpatterns = [
 
     # Retrieve attendance for a specific student and course
     path('attendance/<int:course_id>/<int:student_id>/', views.MarkAttendanceView.as_view(), name='get-student-course-attendance'),
+    path('receive-images/', receive_images, name='receive_images'),
 ] 

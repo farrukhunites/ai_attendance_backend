@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "api",
     "rest_framework",
     "corsheaders",
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -56,6 +57,7 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Allow React app running locally
     "http://192.168.10.45:3000",  # If testing from a different IP
+    "https://ai-attendance-systen.netlify.app",
 ]
 
 ROOT_URLCONF = 'backend.urls'
