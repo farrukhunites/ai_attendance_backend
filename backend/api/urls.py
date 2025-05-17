@@ -24,4 +24,5 @@ urlpatterns = [
     # Retrieve attendance for a specific student and course
     path('attendance/<int:course_id>/<int:student_id>/', views.MarkAttendanceView.as_view(), name='get-student-course-attendance'),
     path('receive-images/', receive_images, name='receive_images'),
+
 ] 
